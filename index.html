@@ -11,20 +11,20 @@
 <body>
   <form id="forma" action="#" method="post">
     <label for="">Email: 
-      <input id="" type="email" name="email" value="" placeholder="name@server.com">
+      <input id="email"  type="email" name="email" value="" data-error="Valid format: name@server.com" placeholder="name@server.com">
     </label>
     <label for="">Country:
-      <input id="" type="text" name="country" value="" placeholder="Ukraine">
+      <input id="country"  type="text" pattern="[A-Za-z -]+" data-error="Use leters with dash or space" name="country" value="" placeholder="Ukraine">
     </label>
-    <label for="">ZIP:
-      <input id="" type="number" name="zip" value="" placeholder="01001">
+    <label for="zip">ZIP:
+      <input id=""  type="text" inputmode="numeric" value="" pattern="[0-9]{5,}" data-error="Only numbers, at least 5" placeholder="01001">
     </label>
     <fieldset>
       <label for="">Password:
-        <input id="" type="password" name="pass" value="" placeholder="Pass_123">
+        <input id="pass" type="password" name="pass" pattern="(?=.*[A-Z]+)(?=.*[a-z]+)(?=.*[0-9]+)(?=.*[@$!%*#?&+=-_].).{5,}" data-error="Min 5 symbols: Ab123" value="" placeholder="Pass_123">
       </label>
       <label for="">Confirm password:
-        <input id="" type="password" name="passConfirm" value="" placeholder="Pass_123">
+        <input id="passConfirm"  type="password" name="passConfirm" value="" placeholder="Pass_123">
       </label>
     </fieldset>
     <input type="submit" value="send it">

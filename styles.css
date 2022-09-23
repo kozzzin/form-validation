@@ -5,6 +5,7 @@ body {
   height: 100vh;
   box-sizing: border-box;
   overflow: hidden;
+  font-family:' Courier New', Courier, monospace;
 }
 
 body {
@@ -18,15 +19,16 @@ form {
   display: block;
   padding: 10px;
   border: 5px solid lightgray;
+  position: relative;
 }
 
 form label {
   display: grid;
   position: relative;
-  margin-top: 10px;
+  margin-bottom: 10px;
   grid-auto-flow: column;
   background-color: #efefef;
-  padding: 10px 10px 25px 10px;
+  padding: 10px 10px 30px 10px;
   justify-content: space-between;
 }
 
@@ -34,17 +36,87 @@ form input {
   display: inline-block;
   width: 200px;
   height: 20px;
+  border: 1px solid grey;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: 0;
+  font-family:' Courier New', Courier, monospace;
 }
 
 input[type="submit"] {
   width: 100%;
   margin-top: 10px;
+  display: grid;
+  align-content: center;
+  height: 50px;
+  box-sizing: border-box;
+  line-height: 50px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: black;
+  color: #fff;
+}
+
+input[type="submit"]:hover {
+  background-color: darkblue;
 }
 
 fieldset {
   margin: 10px 0 0;
-  padding: 0 0 10px;
+  padding: 10px 0 0;
   border: 0;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
+}
+
+input:default {
+  border-color: black;
+}
+
+/* input:not(:focus):valid {
+  border-color: lightseagreen;
+} */
+
+input:invalid,
+input:focus:invalid {
+  border: 3px solid crimson;
+}
+
+
+input:focus-visible {
+  outline: none;
+  outline-color: none;
+}
+
+input:focus {
+  border-color: rgb(255, 196, 0);
+  box-shadow: 0;
+}
+
+
+
+input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input[type="submit"]:disabled:hover {
+  background-color: black;
+}
+
+label:focus-within {
+  background-color: lightyellow;
+}
+
+.wrong {
+  background-color: crimson;
+  color: beige;
+  position: absolute;
+  display: block;
+  /* padding: 5px; */
+  text-align: center;
+  box-sizing: border-box;
+  font-size: 0.7rem;
+  line-height: 1.4rem;
 }
