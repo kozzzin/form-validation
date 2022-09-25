@@ -27,6 +27,14 @@ class FormController {
 
     this.form.querySelector('[type="submit"]').disabled = true;
 
+    document.querySelector('form')
+      .addEventListener(
+        'submit',
+        (event) => {
+          sayThanx(event);
+        },
+      );
+
     document.querySelectorAll('input').forEach(
       (input) => {
         const events = [
@@ -34,13 +42,14 @@ class FormController {
           'change',
           'blur',
         ];
-
         events.forEach(
           (event) => {
             input.addEventListener(
               event,
               (e) => {
-                hasErrors(e, input);
+                if (!hasErrors(e, input)) {
+                  showOKStatus(e);
+                }
                 checkForm(e, input);
               },
             );
@@ -95,6 +104,7 @@ class Validator {
 
 function hasErrors(e, input) {
   removeErrorMessage(e, input);
+  removeOKMessage(e, input);
 
   if (hasEmptyField(e, input)) {
     return true;
@@ -115,6 +125,14 @@ function hasErrors(e, input) {
 function removeErrorMessage(e, input) {
   try {
     e.target.parentNode.querySelector('.wrong').remove();
+  } catch {
+
+  }
+}
+
+function removeOKMessage(e, input) {
+  try {
+    e.target.parentNode.classList.remove('ok');
   } catch {
 
   }
@@ -154,6 +172,11 @@ function passNotConfirmed(e) {
   return false;
 }
 
+function showOKStatus(event, message = '✓') {
+  event.target.parentNode
+    .classList.add('ok');
+}
+
 function showError(event, message) {
   const div = document.createElement('div');
   div.className = 'wrong';
@@ -184,11 +207,22 @@ function checkForm() {
 
   if (everyIsValidated) {
     document.querySelector('input[type="submit"]').disabled = false;
+  } else {
+    document.querySelector('input[type="submit"]').disabled = true;
   }
 }
 
-// check all form fields and leave submit in disabled state
-// BUG: if field is not blured it's not required
-// maybe add data-required field: and use it to validate
-// refactoring: now have mess
-// add mark: completed, everything is good with this field!
+function sayThanx(event) {
+  const form = document.querySelector('form');
+  const formData = new FormData(form);
+  const response = `
+  <strong>Thank you!</strong><br>
+  Check your information<br>
+  one more time:<br>
+  <strong>Email:</strong> ${formData.get('email')}<br>
+  <strong>Country:</strong> ${formData.get('country')}<br>
+  <strong>ZIP:</strong> ${formData.get('zip')}<br><br>
+  `;
+  // eslint-disable-next-line no-param-reassign
+  event.target.innerHTML = response;
+}
