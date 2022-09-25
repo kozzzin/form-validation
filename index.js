@@ -29,38 +29,21 @@ class FormController {
 
     document.querySelectorAll('input').forEach(
       (input) => {
-        input.addEventListener(
+        const events = [
           'keyup',
-          (e) => {
-            inputCheck(
-              e,
-              input,
-            );
-          },
-        );
-
-        input.addEventListener(
+          'change',
           'blur',
-          (e) => {
-            inputCheck(
-              e,
-              input,
-            );
-            if (input.value === '') {
-              e.target.setCustomValidity('its empty');
-              try {
-                e.target.parentNode.querySelector('.wrong').remove();
-              } catch {
+        ];
 
-              }
-              showError(
-                e,
-                'required field',
-              );
-            } else {
-              e.target.setCustomValidity('');
-            }
-            checkForm();
+        events.forEach(
+          (event) => {
+            input.addEventListener(
+              event,
+              (e) => {
+                hasErrors(e, input);
+                checkForm(e, input);
+              },
+            );
           },
         );
       },
@@ -110,10 +93,68 @@ class Validator {
   }
 }
 
-function showError(
-  event,
-  message,
-) {
+function hasErrors(e, input) {
+  removeErrorMessage(e, input);
+
+  if (hasEmptyField(e, input)) {
+    return true;
+  }
+
+  if (hasInputError(e, input)) {
+    return true;
+  }
+
+  if ((input.id === 'passConfirm')
+      && (passNotConfirmed(e, input))) {
+    return true;
+  }
+
+  return false;
+}
+
+function removeErrorMessage(e, input) {
+  try {
+    e.target.parentNode.querySelector('.wrong').remove();
+  } catch {
+
+  }
+}
+
+function hasInputError(e, input) {
+  if (!input.validity.valid) {
+    showError(e, e.target.getAttribute('data-error'));
+    return true;
+  }
+  return false;
+}
+
+function hasEmptyField(e, input) {
+  if (input.value === '') {
+    e.target.setCustomValidity('it\'s empty');
+    showError(e, 'required field');
+    return true;
+  }
+  e.target.setCustomValidity('');
+  e.target.checkValidity();
+  return false;
+}
+
+function passNotConfirmed(e) {
+  const pass = document.querySelector('#pass');
+  const passConfirm = document.querySelector('#passConfirm');
+
+  if (pass.value !== passConfirm.value) {
+    passConfirm.setCustomValidity('not equal to password');
+    showError(e, 'not equal to password');
+    return true;
+  }
+
+  passConfirm.setCustomValidity('');
+  passConfirm.checkValidity();
+  return false;
+}
+
+function showError(event, message) {
   const div = document.createElement('div');
   div.className = 'wrong';
   div.innerText = message;
@@ -126,39 +167,28 @@ function showError(
 }
 
 function checkForm() {
-  const form = document.querySelector('form');
+  const inputFields = Array.from(document.querySelectorAll('input'));
+  const everyIsValidated = inputFields.every(
+    (input) => {
+      if (input.type != 'submit') {
+        // console.log(
+        //   input.id,
+        //   input.value !== '',
+        //   input.validity.valid,
+        // );
+        return input.value !== '' && input.validity.valid;
+      }
+      return true;
+    },
+  );
 
-  const every = Array.from(document.querySelectorAll('input'))
-    .every((input) => {
-      return input.checkValidity();
-    });
-
-  if (form.checkValidity()) {
-    document.querySelector('[type="submit"]').disabled = false;
+  if (everyIsValidated) {
+    document.querySelector('input[type="submit"]').disabled = false;
   }
 }
 
-function inputCheck(
-  e,
-  input,
-) {
-  try {
-    e.target.parentNode.querySelector('.wrong').remove();
-  } catch {
-
-  }
-  if (!input.validity.valid) {
-    showError(
-      e,
-      e.target.getAttribute('data-error'),
-    );
-  }
-}
-
-// check two passwords
 // check all form fields and leave submit in disabled state
 // BUG: if field is not blured it's not required
 // maybe add data-required field: and use it to validate
-// BUG: when bluring, red label stays
 // refactoring: now have mess
 // add mark: completed, everything is good with this field!
